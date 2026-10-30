@@ -1,0 +1,62 @@
+@startuml
+!include <C4/C4_Component>
+
+skinparam maxMessageSize 100
+
+AddRelTag("invisible", $textColor="transparent", $lineColor="transparent", $lineStyle = DashedLine())
+
+header Template Project
+title C4 Component Diagram Template
+
+'----------------------------------------------------------------
+'Actors
+'----------------------------------------------------------------
+
+'----------------------------------------------------------------
+'Components
+'----------------------------------------------------------------
+Boundary(internet, "Internet Banking System", $type="Software System") {
+    Container(ui, "UI", "Container: Javascript and Angular", "Single-page app that provides Internet banking functionality to customers via their Web browser.")
+    Boundary(backend, "Backend", $type="Container") {
+        Component(statementsapi, "Statement API", "Component: Spring MVC", "API endpoint for access to PDF statements.")
+        Component(signinapi, "Sign In API", "Component: Spring MVC", "API endpoint for customer sign in.")
+        Component(accountsapi, "Accounts Summary API", "Component: Spring MVC", "API endpoint for bank accounts summary information.")
+        Component(statementscomponent, "Statement Component", "Component: Spring Bean", "Provides access to PDF statements.")
+        Component(email, "Email Component", "Component: Spring Bean", "Sends e-mails to users.")
+        Component(coreadapter, "Core Banking System Adapter", "Component: Spring Bean", "A Java wrapper around the API provided by the Core Banking System.")
+        Component(security, "Security Component", "Component: Spring Bean", "Provides functionality related to signing in changing passwords, etc...")
+    }
+    ContainerDb(database, "Database", "Container: MySQL Database Schema", "User accont information, access logs, etc...")
+    Container(statements, "Statements Store", "Container: AWS S3 Bucket", "Bank account statements rendered as PDF files.")
+}
+System(aws, "Amazon Web Services Simple Email Service", "Cloud-based email service provider.", $type="Software System")
+System(core, "Core Banking System", "Handles core banking functions including customer information, bank account management, transactions, etc...", $type="Software System")
+
+'----------------------------------------------------------------
+'Relations
+'----------------------------------------------------------------
+Rel_D(ui, statementsapi, "Requests statements from","JSON/HTTP")
+Rel_D(ui, signinapi, "Makes sign in requests to","JSON/HTTP")
+Rel_D(ui, accountsapi, "Requests a list of bank accounts from","JSON/HTTP")
+Rel(statementsapi, statementscomponent, "Requests statements from")
+Rel(statementsapi, security, "Validates authentication token using")
+Rel(signinapi, security, "Validates credentials using")
+Rel(accountsapi, security, "Validates authentication token using")
+Rel(security, email, "Sends e-mails using")
+Rel(email, aws, "Sends e-mails to customers using", "AWS SES API/HTTP")
+Rel(accountsapi, coreadapter, "Requests lists of bank accounts from")
+Rel(coreadapter, core, "Makes API requests to", "XML/HTTPS")
+Rel(statementscomponent, coreadapter, "Requests statement information from")
+Rel(statementscomponent, statements, "Reads from and writes to","AWS S3 API/HTTP")
+Rel_D(security, database, "Reads from and writes to","MySQL protocol")
+
+
+'----------------------------------------------------------------
+'Layout
+'----------------------------------------------------------------
+Rel_L(accountsapi, statementsapi, "This rel is just to compose the layout", $tags="invisible")
+Rel_L(backend, statements, "This rel is just to compose the layout", $tags="invisible")
+
+SHOW_LEGEND()
+
+@enduml

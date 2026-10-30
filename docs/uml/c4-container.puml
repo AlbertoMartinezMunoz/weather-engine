@@ -1,0 +1,47 @@
+@startuml
+!include <C4/C4_Container>
+
+AddRelTag("invisible", $textColor="transparent", $lineColor="transparent", $lineStyle = DashedLine())
+
+header Template Project
+title C4 Container Diagram Template
+
+'----------------------------------------------------------------
+'Actors
+'----------------------------------------------------------------
+Person(customer, "Personal Baking Customer", "A customer of the bank with one or more personal bank accounts",$type="Person")
+
+'----------------------------------------------------------------
+'Components
+'----------------------------------------------------------------
+Boundary(internet, "Internet Banking System", $type="Software System") {
+    Container(static, "Static Content", "Container: Directory", "HTML, CSS, Javascript, etc...")
+    Container(ui, "UI", "Container: Javascript and Angular", "Single-page app that provides Internet banking functionality to customers via their Web browser")
+    Container(backend, "Backend", "Container: Java and Spring Boot", "Provides Internet banking functionality via a JSON/HTTP API")
+    ContainerDb(database, "Database", "Container: MySQL Database Schema", "User accont information, access logs, etc...")
+    Container(statements, "Statements Store", "Container: AWS S3 Bucket", "Bank account statements rendered as PDF files")
+}
+System(aws, "Amazon Web Services Simple Email Service", "Cloud-based email service provider", $type="Software System")
+System(core, "Core Banking System", "Handles core banking functions including customer information, bank account management, transactions, etc...", $type="Software System")
+
+'----------------------------------------------------------------
+'Relations
+'----------------------------------------------------------------
+Rel(customer, static, "Loads the UI from")
+Rel(customer, ui, "Views account balances and makes payments using")
+Rel_R(static, ui, "Delivers")
+Rel_D(ui, backend, "Makes API requests to","JSON/HTTP")
+Rel_D(backend, database, "Reads from and writes to","MySQL protocol")
+Rel_D(backend, statements, "Reads from and writes to","AWS S3 API/HTTP")
+Rel_R(backend, aws, "Sends e-mails to customers using","AWS SES API/HTTP")
+Rel_D(backend, core, "Makes API requests to","XML/HTTPS")
+Rel_U(aws, customer, "Sends e-mails to")
+
+'----------------------------------------------------------------
+'Layout
+'----------------------------------------------------------------
+'Rel_D(xxx, xxx, "This rel is just to compose the layout", $tags="invisible")
+
+SHOW_LEGEND()
+
+@enduml

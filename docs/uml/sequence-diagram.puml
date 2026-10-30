@@ -1,0 +1,35 @@
+@startuml
+
+skinparam style strictuml
+
+'autoactivate off
+skinparam maxMessageSize 250
+
+header Template Project
+title Template Sequence Diagram
+
+'----------------------------------------------------------------
+'Participants
+'----------------------------------------------------------------
+participant "Participant 0" as p0
+participant "Participant 1" as p1
+
+'----------------------------------------------------------------
+'Notes
+'----------------------------------------------------------------
+note left of p0
+This is displayed
+left of Participant 0.
+end note
+
+'----------------------------------------------------------------
+'Sequence
+'----------------------------------------------------------------
+activate p0
+p0 -> p1
+activate p1
+p1 --> p0
+deactivate p1
+deactivate p0
+
+@enduml

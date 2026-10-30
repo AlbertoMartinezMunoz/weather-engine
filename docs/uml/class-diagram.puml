@@ -1,0 +1,90 @@
+@startuml
+
+'skinparam maxMessageSize 150
+'skinparam linetype ortho
+'skinparam style strictuml
+'skinparam groupInheritance 2
+
+hide empty members
+
+header Template Project
+title Class Diagram Template
+
+
+'----------------------------------------------------------------
+'Classes
+'----------------------------------------------------------------
+class client as "Client" {}
+
+class abstraction as "Abstraction" {
+  -i:Implementation
+  +feature1()
+  +feature2()
+}
+
+interface implementation as "Implementation" {
+  +method1()
+  +method2()
+  +method3()
+}
+
+class eabstraction as "Expanded\nAbstraction" {
+  ...
+  +featureN()
+}
+
+class cimplementation as "Concrete\nImplementation" {
+  +method1()
+  +method2()
+  +method3()
+}
+
+'----------------------------------------------------------------
+'Relations
+'----------------------------------------------------------------
+client -down-> abstraction
+abstraction o-right-> implementation
+eabstraction -up-|> abstraction
+cimplementation .up.|> implementation
+
+
+'ccomponent .up.|> component
+'decorator ..|> component
+'(decorator, ccomponent) .up.|> component
+'decorator::wrapee o.right.> component
+'cdecorator -up-|> decorator
+
+'----------------------------------------------------------------
+'Notes
+'----------------------------------------------------------------
+note as clientNote
+  abstraction.feature1()
+end note
+
+note as feature1Note
+  i.method1()
+end note
+
+note as feature2Note
+  i.method2()
+  i.method3()
+end note
+
+note as featureNNote
+  i.methodN()
+  i.methodM()
+end note
+
+
+client .right.. clientNote
+abstraction::feature1 .left.. feature1Note
+abstraction::feature2 .left.. feature2Note
+eabstraction::featureN .left.. featureNNote
+
+'----------------------------------------------------------------
+'Layouts
+'----------------------------------------------------------------
+feature1Note .right.. client #transparent
+feature2Note .right.. abstraction::feature2 #transparent
+
+@enduml
