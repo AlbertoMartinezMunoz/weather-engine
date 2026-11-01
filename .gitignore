@@ -221,3 +221,7 @@ __marimo__/
 
 # VS Code
 .vscode/
+
+# PLANTUML Output Images
+docs/uml/*.svg
+docs/uml/*.png

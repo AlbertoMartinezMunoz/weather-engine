@@ -3,39 +3,39 @@
 
 AddRelTag("invisible", $textColor="transparent", $lineColor="transparent", $lineStyle = DashedLine())
 
-header Template Project
-title C4 Container Diagram Template
+header Weather Engine
+title Weather Engine - C4 Container Diagram
 
 '----------------------------------------------------------------
 'Actors
 '----------------------------------------------------------------
-Person(customer, "Personal Baking Customer", "A customer of the bank with one or more personal bank accounts",$type="Person")
+Person(user, "Weather Engine User", "Obtains an API key and accesses weather forecasts.",$type="Person")
 
 '----------------------------------------------------------------
 'Components
 '----------------------------------------------------------------
-Boundary(internet, "Internet Banking System", $type="Software System") {
-    Container(static, "Static Content", "Container: Directory", "HTML, CSS, Javascript, etc...")
-    Container(ui, "UI", "Container: Javascript and Angular", "Single-page app that provides Internet banking functionality to customers via their Web browser")
-    Container(backend, "Backend", "Container: Java and Spring Boot", "Provides Internet banking functionality via a JSON/HTTP API")
-    ContainerDb(database, "Database", "Container: MySQL Database Schema", "User accont information, access logs, etc...")
-    Container(statements, "Statements Store", "Container: AWS S3 Bucket", "Bank account statements rendered as PDF files")
+Boundary(weatherEngine, "Weather Engine", $type="Software System") {
+    Container(webApp, "Web Application", "Container: Python, Flask, HTML, CSS", "Provides the user interface and REST API to consult weather forecasts and historical observations.")
+    ContainerDb(fileStorage, "File Storage", "Container: Local file system", "Stores raw meteorological data, processed datasets and trained model artifacts.")
+    Container(batchApp, "Batch Processing Application", "Container: Python, PyTorch", "Executes data acquisition, data engineering, model training and forecast generation.")
 }
-System(aws, "Amazon Web Services Simple Email Service", "Cloud-based email service provider", $type="Software System")
-System(core, "Core Banking System", "Handles core banking functions including customer information, bank account management, transactions, etc...", $type="Software System")
+
+Container_Ext(cron, "Linux scheduler", "Container: Cron", "Executes scheduled scripts.")
+
+System_Ext(aemet, "AEMET OpenData", "Provides historical meteorological observations through its Open Data API.", $type="Software System")
+
 
 '----------------------------------------------------------------
 'Relations
 '----------------------------------------------------------------
-Rel(customer, static, "Loads the UI from")
-Rel(customer, ui, "Views account balances and makes payments using")
-Rel_R(static, ui, "Delivers")
-Rel_D(ui, backend, "Makes API requests to","JSON/HTTP")
-Rel_D(backend, database, "Reads from and writes to","MySQL protocol")
-Rel_D(backend, statements, "Reads from and writes to","AWS S3 API/HTTP")
-Rel_R(backend, aws, "Sends e-mails to customers using","AWS SES API/HTTP")
-Rel_D(backend, core, "Makes API requests to","XML/HTTPS")
-Rel_U(aws, customer, "Sends e-mails to")
+Rel_R(user, aemet, "Requests an API key", "HTTPS")
+Rel(user, webApp, "Views forecasts and historical data", "HTTPS")
+Rel_L(cron, batchApp, "Triggers scheduled jobs", "Process execution")
+Rel_U(batchApp, aemet, "Retrieves meteorological observations", "REST API")
+Rel(batchApp, fileStorage, "Reads and writes raw data, datasets and model artifacts", "Parquet/JSON/Pytorch")
+Rel(batchApp, fileStorage, "Reads and writes metadata, observations and forecasts", "JSON")
+Rel(webApp, fileStorage, "Reads forecasts and historical observations", "JSON")
+
 
 '----------------------------------------------------------------
 'Layout
