@@ -19,7 +19,10 @@ Person(user, "Weather Engine User", "Obtains an API key and accesses weather for
 Boundary(weatherEngine, "Weather Engine", $type="Software System") {
     Boundary(batchApp, "Batch Processing Application", $type="Container") {
         Component(acquireScript, "acquire.py", "Component: Python script", "Entry point for meteorological data acquisition.")
+        Component(configScript, "envconfig.py", "Component: Python script", "Entry point for get configuration variables.")
+
         Component(acquisition, "Data Acquisition", "Component: Python package", "Retrieves historical meteorological observations from AEMET.")
+        Component(config, "Configuration", "Component: Python package", "Retrieves configuration from environment files/variables.")
         Component(dataRepository, "Data Repository", "Component: Python package", "Reads and writes raw observations.")
     }
     ContainerDb_Ext(fileStorage, "File Storage", "Container: Local filesystem", "Stores raw data, processed datasets, forecasts, models and execution metadata.")
@@ -33,7 +36,10 @@ Container_Ext(cron, "Scheduler", "Container: Cron", "Triggers periodic execution
 '----------------------------------------------------------------
 Rel(cron, acquireScript, "Executes periodically")
 Rel(user, acquireScript, "Executes")
+Rel_D(user, configScript, "Executes")
 Rel(acquireScript, acquisition, "Invokes")
+Rel_D(acquireScript, config, "Retrieves configuration")
+Rel_D(configScript, config, "Retrieves configuration")
 Rel_R(acquisition, aemet, "Retrieves weather raw data", "HTTPS / REST API")
 Rel(acquisition, dataRepository, "Stores raw observations")
 Rel(dataRepository, fileStorage, "Reads and writes data files")
@@ -42,6 +48,8 @@ Rel(dataRepository, fileStorage, "Reads and writes data files")
 'Layout
 '----------------------------------------------------------------
 'Rel_L(xxx, xxx, "This rel is just to compose the layout", $tags="invisible")
+Rel_L(acquisition, config, "This rel is just to compose the layout", $tags="invisible")
+Rel_L(acquireScript, configScript, "This rel is just to compose the layout", $tags="invisible")
 
 SHOW_LEGEND()
 
