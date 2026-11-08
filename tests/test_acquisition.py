@@ -42,13 +42,13 @@ def set_config_path(script_params, path):
 def run_script(script_params):
     command = ["python", "./scripts/acquisition.py"]
     if script_params.get("--output-dir"):
-        command.append("-o " + script_params["--output-dir"])
+        command.append("-o=" + script_params["--output-dir"])
     if script_params.get("--start-date"):
-        command.append("-s " + script_params["--start-date"])
+        command.append("-s=" + script_params["--start-date"])
     if script_params.get("--end-date"):
-        command.append("-e " + script_params["--end-date"])
+        command.append("-e=" + script_params["--end-date"])
     if script_params.get("--config"):
-        command.append("-c " + script_params["--config"])
+        command.append("-c=" + script_params["--config"])
 
     return subprocess.run(
         command,
