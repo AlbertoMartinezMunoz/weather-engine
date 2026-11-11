@@ -1,4 +1,5 @@
 import subprocess
+from pathlib import Path
 
 import pytest
 from pytest_bdd import given, parsers, scenario, then, when
@@ -18,9 +19,17 @@ def test_script_parameters_integrity():
     pass
 
 
+@scenario("features/acquisition.feature", "Data is Stored at Output Path")
+def test_data_is_stored_at_output_path():
+    pass
+
+
 @given(parsers.re("output path is (?P<path>.*?)"), converters={"path": empty_to_none})
-def set_output_path(script_params, path):
-    script_params["--output-dir"] = path
+def set_output_path(tmp_path, script_params, path):
+    if path:
+        script_params["--output-dir"] = str(tmp_path / path)
+    else:
+        script_params["--output-dir"] = path
 
 
 @given(parsers.re("start date is (?P<date>.*?)"), converters={"date": empty_to_none})
@@ -73,3 +82,10 @@ def date_ordering_error(script_result):
 @then("the script returns success")
 def script_returns_success(script_result):
     assert script_result.returncode == 0
+
+
+@then("data is stored at output path")
+def data_is_stored_at_output_path(script_params, script_result):
+    f = Path(script_params["--output-dir"]) / ("raw/aemet/" + script_params["--start-date"] + ".raw")
+    assert f.exists()
+    assert f.read_text() == "Datos de prueba " + script_params["--start-date"]
