@@ -5,6 +5,11 @@ import argparse
 import sys
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+SRC_PATH = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_PATH))
+from repository.repository import Repository
+
 
 def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -60,6 +65,9 @@ def main() -> int:
 
         # TODO: Initialize the data acquisition service.
         # TODO: Execute the acquisition process.
+
+        repo = Repository(Path(args.output_dir) / "raw/aemet/")
+        repo.save_raw(args.start_date + ".raw", "Datos de prueba " + args.start_date)
 
         print("Data acquisition completed successfully.")
         return 0
