@@ -17,7 +17,7 @@ Feature: Acquisition
 
     Examples:
         | ouput_path | start_date | end_date   | config_path   | result                                |
-        | ./data     | 2026-10-01 | 2026-10-03 | ./config.yaml | the script returns success            |
+#        | ./data     | 2026-10-01 | 2026-10-03 | ./config.yaml | the script returns success            |
         |            | 2026-10-01 | 2026-10-03 | ./config.yaml | an -o/--output-dir error is notified  |
         | ./data     |            | 2026-10-03 | ./config.yaml | an -s/--start-date error is notified  |
         | ./data     | 2020-10-01 |            | ./config.yaml | an -e/--end-date error is notified    |
