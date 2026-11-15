@@ -28,3 +28,5 @@ jobs:
     - name: Test
       run: |
         python -m pytest -v -s ./tests
+      env:
+          AEMET_API_KEY: ${{ secrets.AEMET_API_KEY }}
