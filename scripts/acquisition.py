@@ -8,6 +8,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SRC_PATH = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_PATH))
+from datetime import datetime
+
 from repository.repository import Repository
 
 
@@ -67,7 +69,8 @@ def main() -> int:
         # TODO: Execute the acquisition process.
 
         repo = Repository(Path(args.output_dir) / "raw/aemet/")
-        repo.save_raw(args.start_date + ".raw", "Datos de prueba " + args.start_date)
+        d = datetime.strptime(args.start_date, "%Y-%m")
+        repo.save_raw("2422", d.year, d.month, "Datos de prueba " + args.start_date)
 
         print("Data acquisition completed successfully.")
         return 0
