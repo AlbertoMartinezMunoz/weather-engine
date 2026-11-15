@@ -16,7 +16,7 @@ class EnvConfigContext:
 @pytest.fixture
 def set_up(mocker):
     dict = {
-        "KEY": "value",
+        "KEY": "env_file_value",
     }
     env_path = "./dummy/path"
 
@@ -36,3 +36,15 @@ def test_given_env_configuration_when_getting_new_key_then_exception_is_raised(s
 
     with pytest.raises(ValueError, match=re.escape(expected_message)):
         set_up.envconfig.get(key)
+
+
+def test_given_key_not_in_env_file_when_getting_key_then_value_is_read_from_os_environ(mocker, set_up):
+    mocker.patch.dict("os.environ", {"OS_KEY": "os_value"})
+
+    assert "os_value" == set_up.envconfig.get("OS_KEY")
+
+
+def test_given_key_in_env_file_and_os_environ_when_getting_key_then_env_file_value_is_kept(mocker, set_up):
+    mocker.patch.dict("os.environ", {"KEY": "os_value"})
+
+    assert set_up.expected["KEY"] == set_up.envconfig.get("KEY")
