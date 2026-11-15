@@ -69,16 +69,11 @@ def nearest_stations(lat, lon, n, api_key):
 
 
 def parse_args():
-    env = EnvConfig()
     parser = argparse.ArgumentParser(description="Find the n AEMET weather stations closest to a GPS position.")
     parser.add_argument("latitude", type=float, help="latitude in decimal degrees (e.g. 41.6523)")
     parser.add_argument("longitude", type=float, help="longitude in decimal degrees (e.g. -4.7245)")
     parser.add_argument("n", type=int, help="number of stations to return")
-    parser.add_argument(
-        "--api-key",
-        default=env.get("AEMET_API_KEY"),
-        help="AEMET OpenData API key (default: AEMET_API_KEY environment variable)",
-    )
+    parser.add_argument("--api-key", help="AEMET OpenData API key (default: AEMET_API_KEY environment variable)")
     args = parser.parse_args()
 
     if not -90 <= args.latitude <= 90:
@@ -88,7 +83,10 @@ def parse_args():
     if args.n < 1:
         parser.error("n must be at least 1")
     if not args.api_key:
-        parser.error("an API key is required (use --api-key or set AEMET_API_KEY)")
+        try:
+            args.api_key = EnvConfig().get("AEMET_API_KEY")
+        except ValueError:
+            parser.error("an API key is required (use --api-key or set AEMET_API_KEY)")
     return args
 
 
