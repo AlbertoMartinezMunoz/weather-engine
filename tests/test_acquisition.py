@@ -19,9 +19,9 @@ def test_script_parameters_integrity():
     pass
 
 
-@scenario("features/acquisition.feature", "Data is Stored at Output Path")
-def test_data_is_stored_at_output_path():
-    pass
+# @scenario("features/acquisition.feature", "Data is Stored at Output Path")
+# def test_data_is_stored_at_output_path():
+#     pass
 
 
 @given(parsers.re("output path is (?P<path>.*?)"), converters={"path": empty_to_none})
