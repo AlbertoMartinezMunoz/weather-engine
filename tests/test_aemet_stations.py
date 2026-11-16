@@ -12,8 +12,6 @@ from pytest_bdd import parsers, scenarios, then, when
 
 from envconfig.envconfig import EnvConfig
 
-pytestmark = pytest.mark.live
-
 SCRIPT = PROJECT_ROOT / "scripts" / "aemet_stations.py"
 
 scenarios("features/aemet_stations.feature")
